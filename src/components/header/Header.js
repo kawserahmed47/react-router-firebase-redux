@@ -6,6 +6,11 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { auth } from "../../firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { SET_ACTIVE_USER, REMOVE_ACTIVE_USER } from "../../redux/slice/authSlice";
+import {ShowOnLogin, ShowOnLogOut} from "../hiddenLink/HiddenLink";
+
+
 
 const logo = (
   <div className={styles.logo}>
@@ -35,20 +40,47 @@ const Header = () => {
   const [authUser, setAuthUser] = useState(false);
   const [displayName, setDisplayName] = useState("");
 
+  const dispatch = useDispatch(); 
+
     // Monitor currently sign in user
     useEffect(() => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           const uid = user.uid;
+          if(user.displayName == null){
+            setDisplayName(user.email.substring(0, user.email.indexOf('@')));
+          } else {
+            setDisplayName(user.displayName);
+          }
           console.log(user.displayName);
-          setDisplayName(user.displayName);
+
+         
           setAuthUser(true);
+
+          dispatch(
+            SET_ACTIVE_USER({
+              isLoggedIn: true,
+              email: user.email,
+              userName: displayName,
+              userID: user.uid
+            })
+          )
+
         } else {
           setDisplayName("");
           setAuthUser(false);
+
+          dispatch(
+            REMOVE_ACTIVE_USER({
+              isLoggedIn: false,
+              email: null,
+              userName: null,
+              userID: null
+            })
+          )
         }
       });
-    }, []);
+    }, [dispatch, displayName]);
 
   const toggleMenu = () => { 
     setShowMenu(!showMenu);
@@ -106,7 +138,7 @@ const Header = () => {
             {cart}
             <span className={styles.links}>
               <NavLink to="/order-history" className={activeLink}>My Orders</NavLink>
-              {
+              {/* {
                 authUser ?
                 <span>
                   <a href="#"><FaUserCircle size={16} /> &nbsp; Hi, {displayName}</a>
@@ -117,7 +149,18 @@ const Header = () => {
                   <NavLink to="/login" className={activeLink} >Login</NavLink>
                   <NavLink to="/register" className={activeLink}>Register</NavLink>
                 </span>
-              }
+              } */}
+
+              <ShowOnLogin>
+                <a href="#"><FaUserCircle size={16} /> &nbsp; Hi, {displayName}</a>
+                <NavLink to="/" onClick={logoutUser}> Logout</NavLink>
+              </ShowOnLogin>
+
+              <ShowOnLogOut>
+                  <NavLink to="/login" className={activeLink} >Login</NavLink>
+                  <NavLink to="/register" className={activeLink}>Register</NavLink>
+              </ShowOnLogOut>
+
             </span>
           </div>
         </nav>
