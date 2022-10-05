@@ -41,6 +41,24 @@ const Login = () => {
         toast.error(error.message);
       });
   };
+  const provider = new GoogleAuthProvider();
+const signInWithGoogle = () => { 
+  signInWithPopup(auth, provider)
+  .then((result) => {
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    const user = result.user;
+    toast.success("Login Successful...");
+    setTimeout(() => {
+      navigate('/')
+    }, 3000);
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    toast.error(errorMessage);
+  });
+ }
 
   return (
     <>
@@ -61,7 +79,7 @@ const Login = () => {
                       <Link to="/reset">Reset Password</Link>
                   </div>
                   <p>-- or --</p>
-                  <button type="submit" className='--btn --btn-danger --btn-block'><FaGoogle color="#fff" size={20} /> &nbsp;  Login With Google</button>
+                  <button onClick={signInWithGoogle} type="button" className='--btn --btn-danger --btn-block'><FaGoogle color="#fff" size={20} /> &nbsp;  Login With Google</button>
                   <span className={styles.register}>
                     <p>Didn't have any account?</p>
                     <Link to="/register">Register</Link>

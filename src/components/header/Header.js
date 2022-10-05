@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
-import { FaShoppingCart, FaTimes } from "react-icons/fa";
+import { FaShoppingCart, FaTimes, FaUserCircle } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { auth } from "../../firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -27,21 +27,37 @@ const cart = (
   </span>
 );
 
+
 const activeLink = ({isActive}) => (  isActive ? `${styles.active}` : "");
-
-
-
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [authUser, setAuthUser] = useState(false);
+  const [displayName, setDisplayName] = useState("");
 
- const toggleMenu = () => { 
+    // Monitor currently sign in user
+    useEffect(() => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+          console.log(user.displayName);
+          setDisplayName(user.displayName);
+          setAuthUser(true);
+        } else {
+          setDisplayName("");
+          setAuthUser(false);
+        }
+      });
+    }, []);
+
+  const toggleMenu = () => { 
     setShowMenu(!showMenu);
   }
 
   const hideMenu = () => { 
     setShowMenu(false);
   }
+
   const navigate = useNavigate();
 
   const logoutUser = () => {
@@ -87,15 +103,22 @@ const Header = () => {
           </div>
           
           <div className={styles["header-right"]} onClick={hideMenu}>
-            <span className={styles.links}>
-              <NavLink to="/login" className={activeLink} >Login</NavLink>
-              <NavLink to="/register" className={activeLink}>Register</NavLink>
-              <NavLink to="/order-history" className={activeLink}>My Orders</NavLink>
-              <NavLink to="/" onClick={logoutUser}>
-                Logout
-              </NavLink>
-            </span>
             {cart}
+            <span className={styles.links}>
+              <NavLink to="/order-history" className={activeLink}>My Orders</NavLink>
+              {
+                authUser ?
+                <span>
+                  <a href="#"><FaUserCircle size={16} /> &nbsp; Hi, {displayName}</a>
+                  <NavLink to="/" onClick={logoutUser}> Logout</NavLink>
+                </span>   
+                : 
+                <span>
+                  <NavLink to="/login" className={activeLink} >Login</NavLink>
+                  <NavLink to="/register" className={activeLink}>Register</NavLink>
+                </span>
+              }
+            </span>
           </div>
         </nav>
         <div className={styles["menu-icon"]}>
