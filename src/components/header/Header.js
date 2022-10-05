@@ -135,9 +135,9 @@ const Header = () => {
           </div>
           
           <div className={styles["header-right"]} onClick={hideMenu}>
-            {cart}
+            {/* {cart} */}
             <span className={styles.links}>
-              <NavLink to="/order-history" className={activeLink}>My Orders</NavLink>
+              {/* <NavLink to="/order-history" className={activeLink}>My Orders</NavLink> */}
               {/* {
                 authUser ?
                 <span>
@@ -165,7 +165,7 @@ const Header = () => {
           </div>
         </nav>
         <div className={styles["menu-icon"]}>
-          {cart}
+          {/* {cart} */}
           <HiOutlineMenuAlt3 size={20} onClick={toggleMenu} />
         </div>
       </div>

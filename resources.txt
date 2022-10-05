@@ -1,2 +1,6 @@
 Reference Tutorial:
 https://www.youtube.com/watch?v=WyCwTqHtcwI&ab_channel=ZinoTrustAcademy
+
+Firebase Hosting Deploy:
+https://www.youtube.com/watch?v=dQzIKaNzW84&ab_channel=SanskarTiwari
+https://stackoverflow.com/questions/53718983/my-react-project-not-working-after-deploy-to-firebase-hosting
